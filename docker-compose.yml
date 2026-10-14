@@ -1,0 +1,8 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: technical_test_devops_simple_journey_indonesia
+    ports:
+      - "8080:8080"
