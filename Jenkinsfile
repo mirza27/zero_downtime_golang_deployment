@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        DEPLOY_HOST = '203.0.113.10'
+        DEPLOY_HOST = '208.87.132.201'
         DEPLOY_USER = 'mirza'
         APP_DIR = '~/projects/docker/technical-test-simple-server'
         APP_BRANCH = 'main'
