@@ -9,7 +9,7 @@ pipeline {
     environment {
         DEPLOY_HOST = '208.87.132.201'
         DEPLOY_USER = 'mirza'
-        APP_DIR = '~/projects/docker/technical-test-simple-server'
+        APP_DIR = '/home/mirza/projects/docker/technical-test-simple-server'
         APP_BRANCH = 'main'
     }
 
@@ -20,21 +20,16 @@ pipeline {
                     sh '''
                         set -eu
 
-                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
-                            "bash -se" <<'REMOTE'
-                            set -eu
-
-                            cd "$APP_DIR"
-
-                            git fetch origin "$APP_BRANCH"
-                            git pull --ff-only origin "$APP_BRANCH"
-
-                        REMOTE
+                        ssh -o StrictHostKeyChecking=yes \
+                            "$DEPLOY_USER@$DEPLOY_HOST" \
+                            "cd '$APP_DIR' &&
+                             git fetch origin '$APP_BRANCH' &&
+                             git pull --ff-only origin '$APP_BRANCH' &&
+                             echo 'Source update completed'"
                     '''
                 }
             }
         }
-
 
         stage('Build') {
             steps {
@@ -42,15 +37,11 @@ pipeline {
                     sh '''
                         set -eu
 
-                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
-                            "bash -se" <<'REMOTE'
-                            set -eu
-
-                            cd "$APP_DIR"
-
-                            make build
-
-                        REMOTE
+                        ssh -o StrictHostKeyChecking=yes \
+                            "$DEPLOY_USER@$DEPLOY_HOST" \
+                            "cd '$APP_DIR' &&
+                             make build &&
+                             echo 'Build completed'"
                     '''
                 }
             }
@@ -62,15 +53,11 @@ pipeline {
                     sh '''
                         set -eu
 
-                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
-                            "bash -se" <<'REMOTE'
-                            set -eu
-
-                            cd "$APP_DIR"
-
-                            make run
-
-                        REMOTE
+                        ssh -o StrictHostKeyChecking=yes \
+                            "$DEPLOY_USER@$DEPLOY_HOST" \
+                            "cd '$APP_DIR' &&
+                             make run &&
+                             echo 'Deployment completed'"
                     '''
                 }
             }
