@@ -13,26 +13,27 @@ pipeline {
         APP_BRANCH = 'main'
     }
 
-    stage('Test SSH Credential') {
-        steps {
-            sshagent(credentials: ['deploy-ssh']) {
-                sh '''
-                    set -eu
+    stages {
+        stage('Test SSH Credential') {
+            steps {
+                sshagent(credentials: ['deploy-ssh']) {
+                    sh '''
+                        set -eu
 
-                    echo "=== SSH Agent status ==="
-                    test -n "${SSH_AUTH_SOCK:-}" || {
-                        echo "ERROR: SSH_AUTH_SOCK tidak tersedia"
-                        exit 1
-                    }
+                        echo "=== SSH Agent status ==="
+                        test -n "${SSH_AUTH_SOCK:-}" || {
+                            echo "ERROR: SSH_AUTH_SOCK tidak tersedia"
+                            exit 1
+                        }
 
-                    echo "SSH_AUTH_SOCK tersedia"
-                    ssh-add -l
-                '''
+                        echo "SSH_AUTH_SOCK tersedia"
+                        ssh-add -l
+                    '''
+                }
             }
         }
-    }
 
-    stages {
+
         stage('Update') {
             steps {
                 sshagent(credentials: ['deploy-ssh']) {
