@@ -20,8 +20,7 @@ pipeline {
                     sh '''
                         set -eu
 
-                        ssh -o StrictHostKeyChecking=yes \
-                            "$DEPLOY_USER@$DEPLOY_HOST" \
+                        ssh  "$DEPLOY_USER@$DEPLOY_HOST" \
                             "cd '$APP_DIR' &&
                              git fetch origin '$APP_BRANCH' &&
                              git pull --ff-only origin '$APP_BRANCH' &&
@@ -37,8 +36,7 @@ pipeline {
                     sh '''
                         set -eu
 
-                        ssh -o StrictHostKeyChecking=yes \
-                            "$DEPLOY_USER@$DEPLOY_HOST" \
+                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
                             "cd '$APP_DIR' &&
                              make build &&
                              echo 'Build completed'"
@@ -53,8 +51,7 @@ pipeline {
                     sh '''
                         set -eu
 
-                        ssh -o StrictHostKeyChecking=yes \
-                            "$DEPLOY_USER@$DEPLOY_HOST" \
+                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
                             "cd '$APP_DIR' &&
                              make run &&
                              echo 'Deployment completed'"
