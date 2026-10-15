@@ -21,17 +21,54 @@ pipeline {
         //     }
         // }
 
-        stage('Build And Push') {
+        stage('Checkout') {
             steps {
-
-                // upload to docker repository
-                // use docker agent to build and push image to docker repository
-
-                sh 'make build VERSION=$VERSION'
+                checkout scm
             }
         }
 
-        stage('Deploy') {
+        stage('Check Version'){
+            steps {
+                script {
+                    def version = sh(
+                        script: "make -s --eval='print-version:; @echo \$(VERSION)' print-version",
+                        returnStdout: true
+                    ).trim()
+
+                    env.VERSION = version
+
+                    echo "Release version: ${env.VERSION}"
+                }
+            }
+        }
+
+
+        stage('Build And Push') {
+            steps {
+                sh 'make build'
+
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'docker-hub-pat',
+                        usernameVariable: 'DOCKERUSERNAME',
+                        passwordVariable: 'DOCKERPAT'
+                    )
+                ]) {
+                    sh '''
+                        set +x
+                        echo "$DOCKERPAT" | docker login \
+                            --username "$DOCKERUSERNAME" \
+                            --password-stdin
+                    '''
+
+                    // Push Docker image
+                    sh 'make push'
+                }
+            }
+        }
+
+
+        stage('Update') {
             steps {
                 sshagent(credentials: ['deploy-ssh']) {
                     sh '''
@@ -67,3 +104,13 @@ pipeline {
         }
     }
 }
+
+post {
+        success {
+            echo 'Deployment completed successfully!'
+        }
+
+        failure {
+            echo 'Deployment failed. Check the console log.'
+        }
+    }
