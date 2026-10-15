@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -14,54 +15,19 @@ pipeline {
     }
 
     stages {
-        stage('Test SSH Credential') {
+        // stage('Unit Test') {
+        //     steps {
+        //         sh 'make test'
+        //     }
+        // }
+
+        stage('Build And Push') {
             steps {
-                sshagent(credentials: ['deploy-ssh']) {
-                    sh '''
-                        set -eu
 
-                        echo "=== SSH Agent status ==="
-                        test -n "${SSH_AUTH_SOCK:-}" || {
-                            echo "ERROR: SSH_AUTH_SOCK tidak tersedia"
-                            exit 1
-                        }
+                // upload to docker repository
+                // use docker agent to build and push image to docker repository
 
-                        echo "SSH_AUTH_SOCK tersedia"
-                        ssh-add -l
-                    '''
-                }
-            }
-        }
-
-
-        stage('Update') {
-            steps {
-                sshagent(credentials: ['deploy-ssh']) {
-                    sh '''
-                        set -eu
-
-                        ssh  "$DEPLOY_USER@$DEPLOY_HOST" \
-                            "cd '$APP_DIR' &&
-                             git fetch origin '$APP_BRANCH' &&
-                             git pull --ff-only origin '$APP_BRANCH' &&
-                             echo 'Source update completed'"
-                    '''
-                }
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sshagent(credentials: ['deploy-ssh']) {
-                    sh '''
-                        set -eu
-
-                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
-                            "cd '$APP_DIR' &&
-                             make build &&
-                             echo 'Build completed'"
-                    '''
-                }
+                sh 'make build VERSION=$VERSION'
             }
         }
 
@@ -74,20 +40,30 @@ pipeline {
                         ssh "$DEPLOY_USER@$DEPLOY_HOST" \
                             "cd '$APP_DIR' &&
                              make run &&
-                             echo 'Deployment completed'"
+                             echo 'Container run completed'"
                     '''
                 }
             }
         }
-    }
 
-    post {
-        success {
-            echo 'Deployment completed successfully!'
-        }
+        stage('Integration Test') {
+            steps {
+                sshagent(credentials: ['deploy-ssh']) {
+                    sh '''
+                        set -eu
 
-        failure {
-            echo 'Deployment failed. Check the console log.'
+                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
+                            "cd '$APP_DIR' &&
+                             make deploy &&
+                             (make health || {
+                                 echo 'Health check failed'
+                                 make rollback
+                                 exit 1
+                             }) &&
+                             echo 'Deployment completed successfully'"
+                    '''
+                }
+            }
         }
     }
 }
