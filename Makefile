@@ -1,5 +1,5 @@
 APP_NAME:=technical-test-simple-server
-VERSION:=1.0.0
+VERSION:=1.0.1
 DOCKER_USERNAME:=mirzarama27
 
 build:

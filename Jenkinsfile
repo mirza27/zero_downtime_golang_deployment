@@ -72,7 +72,7 @@ pipeline {
         }
 
 
-        stage('Update') {
+        stage('Run') {
             steps {
                 sshagent(credentials: ['deploy-ssh']) {
                     sh '''
@@ -82,6 +82,22 @@ pipeline {
                             "cd '$APP_DIR' &&
                              make run &&
                              echo 'Container run completed'"
+                    '''
+                }
+            }
+        }
+
+        stage('Update') {
+            steps {
+                sshagent(credentials: ['deploy-ssh']) {
+                    sh '''
+                        set -eu
+
+                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
+                            "cd '$APP_DIR' &&
+                             make release &&
+                             make update &&
+                             echo 'Container update completed'"
                     '''
                 }
             }
