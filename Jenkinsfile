@@ -7,6 +7,10 @@ pipeline {
         disableConcurrentBuilds()
     }
 
+    triggers {
+        githubPush()
+    }
+
     environment {
         DEPLOY_HOST = '208.87.132.201'
         DEPLOY_USER = 'mirza'
