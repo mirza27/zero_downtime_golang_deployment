@@ -7,6 +7,8 @@ build:
 
 run:
 	mkdir -p state
+	docker stop $(APP_NAME) || true
+	docker rm $(APP_NAME) || true
 	docker run -d \
 		-v "$(CURDIR)/releases:/releases" \
 		-p 8080:8080 \

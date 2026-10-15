@@ -65,24 +65,7 @@ pipeline {
                             --password-stdin
                     '''
 
-                    // Push Docker image
                     sh 'make push'
-                }
-            }
-        }
-
-
-        stage('Run') {
-            steps {
-                sshagent(credentials: ['deploy-ssh']) {
-                    sh '''
-                        set -eu
-
-                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
-                            "cd '$APP_DIR' &&
-                             make run &&
-                             echo 'Container run completed'"
-                    '''
                 }
             }
         }
