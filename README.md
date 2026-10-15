@@ -1,3 +1,3 @@
 technical-test-simple-server
 
-test webhook 6
+test webhook 7
