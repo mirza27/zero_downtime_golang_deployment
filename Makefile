@@ -1,8 +1,9 @@
 APP_NAME:=technical-test-simple-server
 VERSION:=1.0.0
+DOCKER_USERNAME:=mirzarama27
 
 build:
-	docker build --build-arg APP_VERSION=${VERSION} -t ${APP_NAME}:${VERSION} .
+	docker build --build-arg APP_VERSION=${VERSION} -t ${DOCKER_USERNAME}/${APP_NAME}:${VERSION} .
 
 run:
 	mkdir -p state
@@ -23,10 +24,10 @@ update:
 	./scripts/update.sh ${VERSION}
 
 push:
-	docker push ${APP_NAME}:${VERSION} 
+	docker push ${DOCKER_USERNAME}/${APP_NAME}:${VERSION} 
 
 pull:
-	docker pull ${APP_NAME}:${VERSION}
+	docker pull ${DOCKER_USERNAME}/${APP_NAME}:${VERSION}
 
 restart:
 	docker restart ${APP_NAME}:${VERSION}
