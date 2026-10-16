@@ -2,6 +2,9 @@ APP_NAME:=technical-test-simple-server
 VERSION:=1.0.1
 DOCKER_USERNAME:=mirzarama27
 
+test:
+	go test -v ./...
+
 build:
 	docker build --build-arg APP_VERSION=${VERSION} -t ${DOCKER_USERNAME}/${APP_NAME}:${VERSION} .
 # 	docker build --target builder --output type=local,dest=./releases/${VERSION}/ .
@@ -45,7 +48,7 @@ health:
 # 	curl http://localhost:8080/
 
 
-.PHONY: build run release update rollback push pull restart down logs health
+.PHONY: test build run release update rollback push pull restart down logs health
 
 
 
