@@ -80,16 +80,17 @@ pipeline {
                             -o StrictHostKeyChecking=accept-new \
                             "$DEPLOY_USER@$DEPLOY_HOST" \
                             "cd '$APP_DIR' &&
-                             make release &&
-                             make update &&
-                             make deploy &&
-                             
+
+                             git fetch origin '$APP_BRANCH' && git checkout '$APP_BRANCH' &&
+                             git reset --hard 'origin/$APP_BRANCH' &&
+
+                             make release && make update &&
+
                              (make health || {
                                  echo 'Health check failed'
                                  make rollback
                                  exit 1
-                             }) &&
-                             echo 'Deployment completed successfully'"
+                             }) && echo 'Deployment completed successfully'"
                     '''
                 }
             }
