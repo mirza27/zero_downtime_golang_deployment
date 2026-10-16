@@ -96,9 +96,8 @@ pipeline {
             }
         }
     }
-}
 
-post {
+    post {
         success {
             echo 'Deployment completed successfully!'
         }
@@ -106,4 +105,9 @@ post {
         failure {
             echo 'Deployment failed. Check the console log.'
         }
+
+        always {
+            echo "Pipeline finished with status: ${currentBuild.currentResult}"
+        }
     }
+}
