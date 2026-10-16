@@ -1,21 +1,19 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"os"
+	"log"
+
+	"technical-test-simple-server/internal/config"
+	"technical-test-simple-server/internal/server"
 )
 
 var version = "dev"
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, DevOps! version=%s\n", version)
-	})
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
+	cfg := config.Load()
+	srv := server.New(cfg.Port, version)
+
+	if err := srv.Start(); err != nil {
+		log.Fatalf("server failed: %v", err)
 	}
-	fmt.Println("listening on :" + port)
-	http.ListenAndServe(":"+port, nil)
 }
