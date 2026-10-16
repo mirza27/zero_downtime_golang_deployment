@@ -70,31 +70,20 @@ pipeline {
             }
         }
 
-        stage('Update') {
+        stage('Deploy And Integration Test') {
             steps {
                 sshagent(credentials: ['deploy-ssh']) {
                     sh '''
                         set -eu
 
-                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
+                        ssh \
+                            -o StrictHostKeyChecking=accept-new \
+                            "$DEPLOY_USER@$DEPLOY_HOST" \
                             "cd '$APP_DIR' &&
                              make release &&
                              make update &&
-                             echo 'Container update completed'"
-                    '''
-                }
-            }
-        }
-
-        stage('Integration Test') {
-            steps {
-                sshagent(credentials: ['deploy-ssh']) {
-                    sh '''
-                        set -eu
-
-                        ssh "$DEPLOY_USER@$DEPLOY_HOST" \
-                            "cd '$APP_DIR' &&
                              make deploy &&
+                             
                              (make health || {
                                  echo 'Health check failed'
                                  make rollback

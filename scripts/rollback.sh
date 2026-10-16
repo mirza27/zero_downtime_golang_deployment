@@ -4,6 +4,8 @@ set -euo pipefail
 CONTAINER=technical-test-simple-server
 STATE=./state
 
+mkdir -p "$STATE"
+
 CURRENT="$(cat "$STATE/current.txt")"
 PREVIOUS="$(cat "$STATE/previous.txt")"
 

@@ -25,6 +25,9 @@ release:
 update:
 	./scripts/update.sh ${VERSION}
 
+rollback:
+	./scripts/rollback.sh
+
 push:
 	docker push ${DOCKER_USERNAME}/${APP_NAME}:${VERSION} 
 
@@ -34,8 +37,6 @@ pull:
 restart:
 	docker restart ${APP_NAME}:${VERSION}
 
-rollback:
-	./scripts/rollback.sh
 
 down:
 	docker stop ${APP_NAME}
