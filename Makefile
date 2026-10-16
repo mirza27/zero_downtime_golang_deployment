@@ -10,7 +10,7 @@ run:
 	docker stop $(APP_NAME) || true
 	docker rm $(APP_NAME) || true
 	docker run -d \
-		-v "$(CURDIR)/releases:/releases" \
+		-v "./releases:/releases" \
 		-p 8080:8080 \
 		--name $(APP_NAME) \
 		$(APP_NAME):$(VERSION)
