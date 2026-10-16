@@ -51,5 +51,8 @@ health:
 # 	curl http://localhost:8080/
 
 
+.PHONY: build run release update rollback push pull restart down logs health
+
+
 
 
