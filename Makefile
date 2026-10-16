@@ -4,23 +4,18 @@ DOCKER_USERNAME:=mirzarama27
 
 build:
 	docker build --build-arg APP_VERSION=${VERSION} -t ${DOCKER_USERNAME}/${APP_NAME}:${VERSION} .
+# 	docker build --target builder --output type=local,dest=./releases/${VERSION}/ .
 
 run:
 	mkdir -p state
-	docker stop $(APP_NAME) || true
-	docker rm $(APP_NAME) || true
-	docker run -d \
-		-v "./releases:/releases" \
-		-p 8080:8080 \
-		--name $(APP_NAME) \
-		$(APP_NAME):$(VERSION)
+	docker run -d -v "./releases:/releases" -p 8080:8080 --name $(APP_NAME) ${DOCKER_USERNAME}/${APP_NAME}:${VERSION}
+	printf '%s\n' "${VERSION}" > "./state/current.txt"
 
 release:
-	mkdir -p releases
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-		go build \
-		-ldflags="-X main.version=$(VERSION)" \
-		-o releases/$(VERSION)/server ./cmd/app
+	mkdir -p releases/$(VERSION)
+	docker run -d --name release-container ${DOCKER_USERNAME}/$(APP_NAME):$(VERSION)
+	docker cp release-container:/app/server ./releases/$(VERSION)/server
+	docker rm -f release-container
 
 update:
 	./scripts/update.sh ${VERSION}
@@ -36,7 +31,6 @@ pull:
 
 restart:
 	docker restart ${APP_NAME}:${VERSION}
-
 
 down:
 	docker stop ${APP_NAME}
