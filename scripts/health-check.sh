@@ -7,7 +7,10 @@ set -euo pipefail
 # }
 
 # for rollback test
-curl http://208.87.132.201:8080/failed || {
+curl --show-error \
+  --connect-timeout 2 \
+  --max-time 5 \
+  http://208.87.132.200:8080/ || {
   echo "health check failed" >&2
   exit 1
 }

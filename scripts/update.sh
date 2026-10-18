@@ -20,11 +20,7 @@ printf '%s\n' "$CURRENT" > "$STATE/previous.txt"
 docker exec  "$CONTAINER" sh -ec "
     ln -s '/releases/$VERSION/server' /app/server.next
     mv -Tf /app/server.next /app/server
-
-" || {
-  echo "rollback failed" >&2
-  exit 1
-}
+" 
 
 printf '%s\n' "$VERSION" > "$STATE/current.txt"
 
