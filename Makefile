@@ -1,5 +1,5 @@
 APP_NAME:=technical-test-simple-server
-VERSION:=2.0.2
+VERSION:=2.1.2
 COMMIT_HASH:=$(shell git rev-parse --short HEAD 2>/dev/null || echo "dev")
 IMAGE_TAG:=$(VERSION)-$(COMMIT_HASH)
 DOCKER_USERNAME:=mirzarama27
