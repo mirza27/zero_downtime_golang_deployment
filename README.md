@@ -24,6 +24,14 @@ To keep the application clean and maintainable, the starter code was refactored 
 
 Most build, test, and deployment commands are aliased through the `Makefile` as shortcuts.
 
+### Centralized Versioning & Release Workflow
+Application versioning is centrally driven by `Makefile`:
+- `VERSION`: Base semantic version defined in `Makefile:2` (e.g. `2.1.2`).
+- `COMMIT_HASH`: Retrieved automatically via `git rev-parse --short HEAD`.
+- `IMAGE_TAG`: Evaluated as `$(VERSION)-$(COMMIT_HASH)` (e.g. `2.1.2-2a491c7`), which is injected during build and used across all Docker tags.
+
+> **Important**: Because unit tests explicitly validate the expected response string (`internal/server/server_test.go`), any bump to `VERSION` in `Makefile` must also be reflected in `internal/server/server_test.go:11` and `server_test.go:22`. Otherwise, `make test` will fail during the `Unit Test` stage, intentionally stopping the Jenkins pipeline before build and deploy.
+
 ---
 
 ## Part I: Docker Build
@@ -45,19 +53,19 @@ The build uses a two-stage `Dockerfile`:
 
 ### 3. Build Command
 ```bash
-docker build --build-arg APP_VERSION=${VERSION} -t ${DOCKER_USERNAME}/${APP_NAME}:${VERSION} .
+docker build --build-arg APP_VERSION=${IMAGE_TAG} -t ${DOCKER_USERNAME}/${APP_NAME}:${IMAGE_TAG} .
 ```
 Shortcut:
 ```bash
 make build
 ```
-The `--build-arg APP_VERSION=${VERSION}` flag passes the target version string directly into the Go binary via `-ldflags`.
+The `--build-arg APP_VERSION=${IMAGE_TAG}` flag passes the composite version string (`${VERSION}-${COMMIT_HASH}`) directly into the Go binary via `-ldflags`.
 
 ### 4. Image Size
 - **Final Image Size**: `~19.6 MB`
 ```text
-REPOSITORY                                 TAG     IMAGE ID       SIZE
-mirzarama27/technical-test-simple-server   2.0.2   62fb83d81c3c   19.6MB
+REPOSITORY                                 TAG             IMAGE ID       SIZE
+mirzarama27/technical-test-simple-server   2.1.2-2a491c7   62fb83d81c3c   19.6MB
 ```
 The image contains only Alpine's minimal root filesystem plus the two static Go binaries, omitting the entire Go compiler toolchain.
 
