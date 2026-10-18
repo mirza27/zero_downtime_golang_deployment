@@ -23,7 +23,7 @@ func New(port, version string) *Server {
 
 func (s *Server) routes() {
 	s.mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, DevOps! version=%s\n", s.version)
+		fmt.Fprintf(w, "Hello this is failed, DevOps! version=%s\n", s.version)
 	})
 }
 

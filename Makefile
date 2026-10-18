@@ -1,5 +1,5 @@
 APP_NAME:=technical-test-simple-server
-VERSION:=1.0.1
+VERSION:=1.1.2
 DOCKER_USERNAME:=mirzarama27
 
 test:
@@ -16,7 +16,7 @@ run:
 
 release:
 	mkdir -p releases/$(VERSION)
-	docker run -d --name release-container ${DOCKER_USERNAME}/$(APP_NAME):$(VERSION)
+	docker run --restart=always -d --name release-container ${DOCKER_USERNAME}/$(APP_NAME):$(VERSION)
 	docker cp release-container:/app/server ./releases/$(VERSION)/server
 	docker rm -f release-container
 
@@ -47,8 +47,11 @@ health:
 	./scripts/health-check.sh
 # 	curl http://localhost:8080/
 
+test-reload:
+	exec ./scripts/test.sh > ./scripts/test2.log
 
-.PHONY: test build run release update rollback push pull restart down logs health
+
+.PHONY: test build run release update rollback push pull restart down logs health test-reload
 
 
 
