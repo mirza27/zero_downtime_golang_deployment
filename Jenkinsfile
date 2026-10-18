@@ -19,11 +19,11 @@ pipeline {
     }
 
     stages {
-        // stage('Unit Test') {
-        //     steps {
-        //         sh 'make test'
-        //     }
-        // }
+        stage('Unit Test') {
+            steps {
+                sh 'make test'
+            }
+        }
 
         stage('Checkout') {
             steps {
