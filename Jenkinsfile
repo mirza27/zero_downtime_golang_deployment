@@ -34,14 +34,14 @@ pipeline {
         stage('Check Version'){
             steps {
                 script {
-                    def version = sh(
-                        script: "make -s --eval='print-version:; @echo \$(VERSION)' print-version",
+                    def imageTag = sh(
+                        script: "make -s --eval='print-tag:; @echo \$(IMAGE_TAG)' print-tag",
                         returnStdout: true
                     ).trim()
 
-                    env.VERSION = version
+                    env.IMAGE_TAG = imageTag
 
-                    echo "Release version: ${env.VERSION}"
+                    echo "Release version / Image Tag: ${env.IMAGE_TAG}"
                 }
             }
         }

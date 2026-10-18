@@ -8,7 +8,7 @@ STATE=./state
 
 mkdir -p "$STATE"
 
-[[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 2
+[[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]] || exit 2
 [[ -x "./releases/$VERSION/server" ]] || {
   echo "built release not found: $VERSION" >&2
   exit 1

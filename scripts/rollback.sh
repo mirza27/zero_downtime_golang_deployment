@@ -9,7 +9,7 @@ mkdir -p "$STATE"
 CURRENT="$(cat "$STATE/current.txt")"
 PREVIOUS="$(cat "$STATE/previous.txt")"
 
-[[ "$PREVIOUS" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 2
+[[ "$PREVIOUS" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]] || exit 2
 [[ -x "./releases/$PREVIOUS/server" ]] || exit 1
 
 printf '%s\n' "$CURRENT" > "$STATE/previous.txt"
