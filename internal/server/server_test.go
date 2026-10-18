@@ -8,7 +8,7 @@ import (
 )
 
 func TestHandleRoot(t *testing.T) {
-	s := New("8080", "2.0.0")
+	s := New("8080", "2.0.1")
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rr := httptest.NewRecorder()
@@ -19,7 +19,7 @@ func TestHandleRoot(t *testing.T) {
 		t.Fatalf("expected status %d, got %d", http.StatusOK, rr.Code)
 	}
 
-	expected := "Hello, DevOps! version=2.0.0\n"
+	expected := "Hello, DevOps! version=2.0.1\n"
 	if !strings.Contains(rr.Body.String(), expected) {
 		t.Fatalf("expected body %q, got %q", expected, rr.Body.String())
 	}
