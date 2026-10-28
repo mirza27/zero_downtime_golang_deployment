@@ -12,9 +12,9 @@ pipeline {
     }
 
     environment {
-        DEPLOY_HOST = '208.87.132.201'
-        DEPLOY_USER = 'mirza'
-        APP_DIR = '/home/mirza/projects/docker/technical-test-simple-server'
+        DEPLOY_HOST = credentials('deploy-host') // Jenkins secret-text credential or fallback to env
+        DEPLOY_USER = 'deploy'
+        APP_DIR = '/opt/apps/technical-test-simple-server'
         APP_BRANCH = 'main'
     }
 
