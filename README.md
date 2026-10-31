@@ -1,11 +1,11 @@
-# Zero-Downtime Hotfix Deployment for Go in Containers
+# In-Place Binary Hotfix & Process Supervisor for Go Containers
 
 [![Go Version](https://img.shields.io/badge/Go-1.22+-00ADD8?style=flat&logo=go)](https://golang.org)
 [![Docker](https://img.shields.io/badge/Docker-Multi--stage-2496ED?style=flat&logo=docker)](https://www.docker.com)
 [![Alpine](https://img.shields.io/badge/Runtime-Alpine_3.22-0D597F?style=flat&logo=alpinelinux)](https://alpinelinux.org)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-An in-place binary swap pattern for Go services running in Docker. Achieves zero-downtime hotfixes without container restarts, port rebinding, or dropped requests.
+An in-place binary swap pattern using a Go process supervisor (PID 1) and symlink switching. Enables fast container hotfixes and rollbacks without container recreation.
 
 ---
 
